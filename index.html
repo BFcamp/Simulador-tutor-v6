@@ -4,16 +4,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simulador de Examen Oral</title>
-    <!-- Carga de Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Carga de la fuente Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Iconos (Lucide) -->
     <script src="https://unpkg.com/lucide-react@latest/dist/umd/lucide.js"></script>
     
-    <!-- NUEVO: Librería PDF.js -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
     <script>
         // NUEVO: Configurar el worker para PDF.js
@@ -545,7 +541,6 @@
 </head>
 <body class="bg-gray-100 text-gray-800">
 
-    <!-- NUEVO: Modal de ID de Sincronización -->
     <div id="sync-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50" style="display: none;">
         <div class="bg-white rounded-2xl shadow-xl p-6 max-w-md w-full">
             <h3 class="text-2xl font-bold text-gray-800">Configurar Sincronización</h3>
@@ -569,39 +564,29 @@
             </div>
         </div>
     </div>
-    <!-- FIN MODAL -->
-
-    <!-- Contenedor principal -->
     <div class="max-w-6xl mx-auto p-4 sm:p-8">
         
-        <!-- Cabecera Mejorada -->
         <header class="mb-8 bg-white shadow-lg rounded-xl p-6 sm:p-8">
             <h1 class="text-3xl sm:text-4xl font-extrabold text-gray-900 mb-2">Simulador de Examen Oral</h1>
             <p class="text-lg text-gray-600">Entrena para tus exámenes con IA. Carga material, genera preguntas y guarda tus respuestas.</p>
             
-            <!-- NUEVO: Selector de Materia -->
             <div class="mt-6 border-t border-gray-200 pt-4">
                 <label for="subject-selector" class="block text-base font-semibold text-gray-800 mb-2">Materia Actual:</label>
                 <div class="flex flex-col sm:flex-row sm:space-x-2">
                     <select id="subject-selector" class="w-full sm:w-1/2 p-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500 bg-white">
                         <option value="">-- Cargar Materia --</option>
-                        <!-- Las materias se cargarán aquí -->
-                    </select>
+                        </select>
                     <input type="text" id="new-subject-name" placeholder="Nombre de nueva materia" class="mt-2 sm:mt-0 w-full sm:w-1/2 p-2.5 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500">
                     <button id="add-subject-btn" class="mt-2 sm:mt-0 px-5 py-2.5 bg-gray-600 text-white text-sm font-semibold rounded-lg shadow-md hover:bg-gray-700 transition-all">
                         Crear
                     </button>
                 </div>
             </div>
-            <!-- FIN NUEVO -->
-            
-            <!-- Muestra el ID de usuario para colaboración (requerido) -->
             <div id="sync-id-display" class="mt-3 text-xs text-gray-500" style="display: none;">
                 User ID (Sincronización): <span id="user-id" class="font-mono bg-gray-100 p-1 rounded">Cargando...</span>
             </div>
         </header>
 
-        <!-- Pestañas de Navegación -->
         <div class="mb-6">
             <nav class="flex space-x-4 sm:space-x-8 border-b border-gray-300" aria-label="Tabs">
                 <button id="tab-material-btn" class="tab-button active whitespace-nowrap py-4 px-1 text-base sm:text-lg font-semibold text-gray-500">
@@ -625,15 +610,12 @@
             </nav>
         </div>
 
-        <!-- Contenido de las Pestañas -->
         <div class="bg-white shadow-xl rounded-xl p-6 sm:p-8">
-            <!-- Pestaña 1: Cargar Material (MODIFICADA) -->
             <div id="tab-material" class="tab-panel active space-y-6">
                 <p class="text-base text-gray-600">
                     Pega tu material en las cajas de texto o sube un PDF. El contenido se guarda en la nube y es acumulativo.
                 </p>
                 
-                <!-- NUEVO: Bloque de carga de Syllabus -->
                 <div>
                     <div class="flex justify-between items-center mb-2">
                         <label for="syllabus" class="block text-lg font-semibold text-gray-800">Plan de Estudio / Temario</label>
@@ -646,7 +628,6 @@
                     <textarea id="syllabus" rows="8" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
                 </div>
                 
-                <!-- NUEVO: Bloque de carga de Teoría -->
                 <div>
                     <div class="flex justify-between items-center mb-2">
                         <label for="theory" class="block text-lg font-semibold text-gray-800">Teoría / Apuntes / Casos Clínicos</label>
@@ -659,7 +640,6 @@
                     <textarea id="theory" rows="12" class="w-full p-3 border border-gray-300 rounded-lg shadow-sm focus:ring-blue-500 focus:border-blue-500"></textarea>
                 </div>
                 
-                <!-- NUEVO: Bloque de carga de Experiencias -->
                 <div>
                     <div class="flex justify-between items-center mb-2">
                         <label for="experiences" class="block text-lg font-semibold text-gray-800">Experiencias de Exámenes Orales</label>
@@ -679,18 +659,14 @@
                 <div id="save-status" class="text-green-600 text-base mt-2"></div>
             </div>
             
-            <!-- Pestaña 2: Estudiar y Simular (REDİSEÑADA) -->
             <div id="tab-simulador" class="tab-panel space-y-6">
                 
-                <!-- NUEVO: Contenedor de Selección de Modo -->
                 <div id="mode-selection-container" class="mode-selection-container">
-                    <!-- Modo Estudio -->
                     <div id="study-mode-btn" class="mode-card">
                         <svg data-lucide="brain-circuit" class="w-16 h-16 text-blue-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 0 0-1.2 20.01c.2 0 .2-.1.2-.2v-3.81a1.2 1.2 0 0 0-.21-.75c-.24-.26-1.14-.99-1.39-1.24a.2.2 0 0 1 0-.28c.2-.23.9-.9 1.14-1.14a1C10.66 14.24 10.66 14 10.5 14h-1.03a.2.2 0 0 1-.2-.28c.2-.23.9-.9 1.14-1.14a1C10.51 12.49 10.51 12.24 10.4 12h-1.03a.2.2 0 0 1-.2-.28c.2-.23.9-.9 1.14-1.14a1C10.51 10.49 10.51 10.24 10.4 10h-1.03a.2.2 0 0 1-.2-.28c.2-.23.9-.9 1.14-1.14a1C10.51 8.49 10.51 8.24 10.4 8H9.37a1 1 0 0 1-1-1c0-.49.16-.94.43-1.3A9.91 9.91 0 0 0 8 4.01a10 10 0 0 0-1.2 15.28c.2 0 .2-.1.2-.2v-3.81a1.2 1.2 0 0 0-.21-.75c-.24-.26-1.14-.99-1.39-1.24a.2.2 0 0 1 0-.28c.2-.23.9-.9 1.14-1.14a1C6.66 14.24 6.66 14 6.5 14H5.47a.2.2 0 0 1-.2-.28c.2-.23.9-.9 1.14-1.14a1C6.51 12.49 6.51 12.24 6.4 12H5.37a.2.2 0 0 1-.2-.28c.2-.23.9-.9 1.14-1.14a1C6.51 10.49 6.51 10.24 6.4 10H5.37a.2.2 0 0 1-.2-.28c.2-.23.9-.9 1.14-1.14a1C6.51 8.49 6.51 8.24 6.4 8H6.2a.2.2 0 0 1-.2-.2c0-1.1.9-2 2-2h.2a10 10 0 0 1 3.8 0h.2c1.1 0 2 .9 2 2a.2.2 0 0 1-.2.2H13.6c-.11.24-.11.49 0 .59s.9.9 1.14 1.14a.2.2 0 0 1-.2.28h-1.03c-.11.24-.11.49 0 .59s.9.9 1.14 1.14a.2.2 0 0 1-.2.28h-1.03c-.11.24-.11.49 0 .59s.9.9 1.14 1.14a.2.2 0 0 1-.2.28h-1.03c-.11.24-.11.49 0 .59s.9.9 1.14 1.14a.2.2 0 0 1-.2.28H14.5c-.16 0-.16.24 0 .33s.9.9 1.14 1.14a.2.2 0 0 1 0 .28c-.25.25-1.15.98-1.39 1.24a1.2 1.2 0 0 0-.21.75v3.81c0 .1.1.2.2.2a10 10 0 0 0-1.2-20.01z"></path></svg>
                         <h3>Modo Estudio</h3>
                         <p>Elige un tema de tu Plan de Estudio y recibe una guía priorizada con preguntas clave.</p>
                     </div>
-                    <!-- Modo Examen -->
                     <div id="exam-mode-btn" class="mode-card">
                         <svg data-lucide="swords" class="w-16 h-16 text-red-600" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15.2 2.8 2.9 2.9 4.1 4.1-4.1 4.1-2.9 2.9-4.1-4.1-4.1-4.1 4.1-4.1 2.9-2.9 4.1 4.1z"></path><path d="m5.2 12.8 2.9 2.9 4.1 4.1-4.1 4.1-2.9 2.9-4.1-4.1-4.1-4.1 4.1-4.1 2.9-2.9 4.1 4.1z"></path></svg>
                         <h3>Modo Examen</h3>
@@ -698,14 +674,12 @@
                     </div>
                 </div>
 
-                <!-- NUEVO: Contenedor para Modo Estudio -->
                 <div id="study-mode-container" class="space-y-6" style="display: none;">
                     <button id="back-to-mode-selection" class="px-4 py-2 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 focus:outline-none inline-flex items-center gap-2">
                         <svg data-lucide="arrow-left" class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
                         Volver
                     </button>
                     
-                    <!-- Paso 1: Selección de Tema -->
                     <div id="study-mode-topic-selection">
                         <h2 class="text-2xl font-semibold text-gray-800 mb-4">Modo Estudio: Selecciona un Tema</h2>
                         <div id="syllabus-browser" class="syllabus-browser space-y-2 max-h-[500px] overflow-y-auto bg-gray-50 p-4 rounded-lg">
@@ -713,19 +687,15 @@
                         </div>
                     </div>
                     
-                    <!-- Paso 2: Loader de la Guía -->
                     <div id="study-mode-guide-loader" class="text-center py-10" style="display: none;">
                         <div class="loader mx-auto"></div>
                         <p class="text-lg font-medium text-gray-600 mt-4">Analizando tu material...<br>Creando guía de estudio priorizada.</p>
                     </div>
 
-                    <!-- Paso 3: Guía de Estudio -->
                     <div id="study-mode-guide-output" class="space-y-6">
-                        <!-- La guía generada por IA se insertará aquí -->
-                    </div>
+                        </div>
                 </div>
 
-                <!-- NUEVO: Contenedor para Modo Examen (el simulador antiguo) -->
                 <div id="exam-mode-container" class="space-y-6" style="display: none;">
                     <button id="back-to-mode-selection-2" class="px-4 py-2 bg-gray-200 text-gray-800 font-semibold rounded-lg hover:bg-gray-300 focus:outline-none inline-flex items-center gap-2">
                         <svg data-lucide="arrow-left" class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 19-7-7 7-7"></path><path d="M19 12H5"></path></svg>
@@ -752,7 +722,6 @@
 
             </div>
 
-            <!-- Pestaña 3: Ranking de Temas -->
             <div id="tab-ranking" class="tab-panel space-y-6">
                 <p class="text-base text-gray-600">
                     La IA analizará todas las "Experiencias de Exámenes" para identificar los temas más frecuentes.
@@ -769,7 +738,6 @@
                 </div>
             </div>
 
-            <!-- Pestaña 4: Repasar Guardadas (Hoy) -->
             <div id="tab-review" class="tab-panel space-y-6">
                 <div class="flex justify-between items-center mb-4">
                     <p class="text-base text-gray-600">
@@ -791,7 +759,6 @@
                 </div>
             </div>
 
-            <!-- NUEVO: Pestaña 5: Repaso por Unidades -->
             <div id="tab-units" class="tab-panel space-y-6">
                 <p class="text-base text-gray-600">
                     Todas tus preguntas guardadas, organizadas por Unidad y Tema según tu Plan de Estudio.
@@ -800,7 +767,6 @@
                 <div id="units-output" class="min-h-[200px] space-y-4">
                     <p class="text-gray-500">Selecciona una materia para ver el repaso por unidades.</p>
                 </div>
-                <!-- NUEVO: Barra de Progreso General -->
                 <div id="units-progress-container" class="pt-4 border-t border-gray-200" style="display: none;">
                     <p id="units-progress-text" class="text-sm font-medium text-gray-700 text-center mb-2">Progreso General: 0 de 0 (0%)</p>
                     <div class="progress-bar-container">
@@ -809,7 +775,6 @@
                 </div>
             </div>
 
-            <!-- NUEVO: Pestaña 6: Hoja de ruta -->
             <div id="tab-roadmap" class="tab-panel space-y-6">
                 <p class="text-base text-gray-600">
                     Preguntas programadas para repasar en el futuro, ordenadas cronológicamente.
@@ -823,7 +788,6 @@
         </div>
     </div>
 
-    <!-- Modal de Error -->
     <div id="error-modal" class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50" style="display: none; opacity: 0;">
         <div class="bg-white rounded-2xl shadow-xl p-6 max-w-sm w-full">
             <h3 class="text-xl font-bold text-red-600">Error</h3>
@@ -834,7 +798,6 @@
         </div>
     </div>
 
-    <!-- NUEVO: Modal de Edición de Q&A -->
     <div id="edit-qa-modal" class="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center p-4 z-50" style="display: none;">
         <div class="bg-white rounded-2xl shadow-xl p-6 max-w-lg w-full">
             <h3 class="text-2xl font-bold text-gray-800 mb-4">Editar Pregunta</h3>
@@ -869,9 +832,6 @@
             </div>
         </div>
     </div>
-    <!-- FIN MODAL EDICIÓN -->
-
-    <!-- Scripts de Firebase -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
         import { 
@@ -1731,67 +1691,6 @@
             examModeContainer.style.display = 'block';
         }
 
-        /**
-         * Parsea y renderiza el Plan de Estudio como un acordeón para el Modo Estudio.
-         */
-             // --- INICIO: Nueva función para parsear el Syllabus con IA ---
-        async function parseSyllabusWithAI(syllabusText) {
-            const systemPrompt = `
-                Eres un asistente de organización académica. 
-                Tu tarea es leer un plan de estudios (syllabus) y estructurarlo en un formato JSON.
-                Identifica las 'unidades' (temas principales o bolillas) y los 'temas' (subtemas o contenidos) dentro de cada una.
-
-                Reglas:
-                1. Si el plan de estudios está claramente dividido por "Unidad X" o "Bolilla X", úsalas como "unit".
-                2. Las líneas que siguen a una unidad (y que no son otra unidad) son sus "topics".
-                3. Si el plan solo lista temas (ej. "Tema 1: ...", "Tema 2: ..."), crea una sola unidad llamada "Temas Generales" y lista todos los temas como "topics".
-                4. Interpreta el contenido de forma inteligente. Por ejemplo, si una línea es "Unidad 5. Alcoholes." y la siguiente es "Etanol, metanol, isopropanol.", la segunda línea es un "topic" (o varios) de la Unidad 5.
-            `;
-
-            const jsonSchema = {
-                type: "ARRAY",
-                items: {
-                    type: "OBJECT",
-                    properties: {
-                        "unit": { 
-                            "type": "STRING", 
-                            "description": "El nombre de la unidad o bolilla principal." 
-                        },
-                        "topics": {
-                            "type": "ARRAY",
-                            "description": "Una lista de los temas o subtemas dentro de esa unidad.",
-                            "items": { "type": "STRING" }
-                        }
-                    },
-                    "required": ["unit", "topics"]
-                }
-            };
-            
-            const generationConfig = {
-                responseMimeType: "application/json",
-                responseSchema: jsonSchema
-            };
-
-            const userQuery = `
-                Por favor, parsea el siguiente plan de estudios. Asegúrate de agrupar los temas bajo sus unidades correctas:
-                --- INICIO PLAN DE ESTUDIOS ---
-                ${syllabusText}
-                --- FIN PLAN DE ESTUDIOS ---
-            `;
-
-            try {
-                const resultText = await callGemini(systemPrompt, userQuery, generationConfig);
-                return JSON.parse(resultText);
-            } catch (error) {
-                console.error("Error en parseSyllabusWithAI:", error);
-                throw new Error(`La IA no pudo procesar el plan de estudio: ${error.message}`);
-            }
-        }
-
-        /**
-         * Parsea y renderiza el Plan de Estudio como un acordeón para el Modo Estudio.
-         * MODIFICADO: Ahora usa IA para parsear el syllabus.
-         */
         // --- INICIO: Nueva función para parsear el Syllabus con IA ---
         async function parseSyllabusWithAI(syllabusText) {
             const systemPrompt = `
@@ -1845,8 +1744,7 @@
                 throw new Error(`La IA no pudo procesar el plan de estudio: ${error.message}`);
             }
         }
-        
-        async function renderSyllabusBrowser() {
+
         /**
          * Parsea y renderiza el Plan de Estudio como un acordeón para el Modo Estudio.
          * MODIFICADO: Ahora usa IA para parsear el syllabus.
@@ -1922,138 +1820,9 @@
                  syllabusBrowser.innerHTML = `<p class="text-red-500">Error al analizar el plan de estudio: ${error.message}</p>`;
             }
         }
+        
+        // --- FIN DE LAS FUNCIONES MODIFICADAS ---
 
-            // Mostrar loader mientras la IA analiza
-            syllabusBrowser.innerHTML = `
-                <div class="text-center py-4">
-                    <div class="loader mx-auto"></div>
-                    <p class="text-gray-600 mt-2">Analizando tu Plan de Estudio...</p>
-                </div>`;
-            
-            let groupedSyllabus = [];
-
-            try {
-                // --- ¡CAMBIO CLAVE! ---
-                // Ya no usamos el parser simple, llamamos a la IA
-                groupedSyllabus = await parseSyllabusWithAI(syllabus);
-                // --- FIN DEL CAMBIO ---
-
-                if (!groupedSyllabus || groupedSyllabus.length === 0) {
-                     syllabusBrowser.innerHTML = '<p class="text-red-500">La IA no pudo encontrar temas estructurados en tu plan de estudio.</p>';
-                     return;
-                }
-                
-                // Renderizar el acordeón (esta lógica es la misma de antes)
-                syllabusBrowser.innerHTML = ''; // Limpiar loader
-                groupedSyllabus.forEach((unitData, index) => {
-                    const unitGroupEl = document.createElement('div');
-                    unitGroupEl.className = 'unit-group';
-                    
-                    // Botón de Unidad
-                    const unitButton = document.createElement('button');
-                    unitButton.className = 'unit-toggle-btn';
-                    unitButton.setAttribute('aria-expanded', 'false');
-                    unitButton.innerHTML = `
-                        <span>${unitData.unit}</span>
-                        <span class="toggle-icon" data-lucide="chevron-down"></span>
-                    `;
-                    unitGroupEl.appendChild(unitButton);
-
-                    // Contenedor de Temas (oculto)
-                    const unitTopicsContainer = document.createElement('div');
-                    unitTopicsContainer.className = 'unit-topics-container';
-                    unitGroupEl.appendChild(unitTopicsContainer);
-
-                    if (unitData.topics.length > 0) {
-                        unitData.topics.forEach(topic => {
-                            const topicButton = document.createElement('button');
-                            topicButton.className = 'syllabus-topic-btn';
-                            topicButton.textContent = topic;
-                            topicButton.dataset.unit = unitData.unit;
-                            topicButton.dataset.topic = topic;
-                            unitTopicsContainer.appendChild(topicButton);
-                        });
-                    } else {
-                        // Esto ahora solo debería aparecer si la IA devuelve una unidad con un array de topics vacío
-                        unitTopicsContainer.innerHTML = '<p class="text-gray-500 p-4">No hay temas listados para esta unidad.</p>';
-                    }
-                    syllabusBrowser.appendChild(unitGroupEl);
-                });
-                
-                if (typeof lucide !== 'undefined') { lucide.createIcons(); }
-
-            } catch (error) {
-                 console.error("Error en renderSyllabusBrowser:", error);
-                 syllabusBrowser.innerHTML = `<p class="text-red-500">Error al analizar el plan de estudio: ${error.message}</p>`;
-            }
-        }
-
-            // Simple parser: asume que las líneas sin indentación son Unidades
-            // y las líneas con indentación (espacio o tab) son Temas.
-            const lines = syllabus.split('\n');
-            let groupedSyllabus = [];
-            let currentUnit = null;
-
-            lines.forEach(line => {
-                const trimmedLine = line.trim();
-                if (trimmedLine.length === 0) return;
-
-                if (line.startsWith(' ') || line.startsWith('\t')) {
-                    // Es un Tema
-                    if (currentUnit) {
-                        currentUnit.topics.push(trimmedLine);
-                    }
-                } else {
-                    // Es una Unidad
-                    currentUnit = { unit: trimmedLine, topics: [] };
-                    groupedSyllabus.push(currentUnit);
-                }
-            });
-
-            // Si no se detectaron unidades (texto plano), se agrupa todo en "General"
-            if (groupedSyllabus.length === 0 || (groupedSyllabus.length === 1 && groupedSyllabus[0].topics.length === 0)) {
-                const topics = lines.filter(line => line.trim().length > 0);
-                groupedSyllabus = [{ unit: 'Temas Generales', topics: topics }];
-            }
-
-            // Renderizar el acordeón
-            syllabusBrowser.innerHTML = '';
-            groupedSyllabus.forEach((unitData, index) => {
-                const unitGroupEl = document.createElement('div');
-                unitGroupEl.className = 'unit-group';
-                
-                // Botón de Unidad
-                const unitButton = document.createElement('button');
-                unitButton.className = 'unit-toggle-btn';
-                unitButton.setAttribute('aria-expanded', 'false');
-                unitButton.innerHTML = `
-                    <span>${unitData.unit}</span>
-                    <span class="toggle-icon" data-lucide="chevron-down"></span>
-                `;
-                unitGroupEl.appendChild(unitButton);
-
-                // Contenedor de Temas (oculto)
-                const unitTopicsContainer = document.createElement('div');
-                unitTopicsContainer.className = 'unit-topics-container';
-                unitGroupEl.appendChild(unitTopicsContainer);
-
-                if (unitData.topics.length > 0) {
-                    unitData.topics.forEach(topic => {
-                        const topicButton = document.createElement('button');
-                        topicButton.className = 'syllabus-topic-btn';
-                        topicButton.textContent = topic;
-                        topicButton.dataset.unit = unitData.unit;
-                        topicButton.dataset.topic = topic;
-                        unitTopicsContainer.appendChild(topicButton);
-                    });
-                } else {
-                     unitTopicsContainer.innerHTML = '<p class="text-gray-500 p-4">No hay temas listados para esta unidad.</p>';
-                }
-                syllabusBrowser.appendChild(unitGroupEl);
-            });
-            
-            if (typeof lucide !== 'undefined') { lucide.createIcons(); }
-        }
 
         /**
          * Se llama al seleccionar un tema en el Modo Estudio.
@@ -2178,12 +1947,9 @@
                     <div class="subtopic-body">
                         <p class="ai-justification">${subtopic.justification}</p>
                         
-                        <!-- Aquí se inserta la pregunta clave -->
                         <div class="key-question-wrapper">
-                            <!-- El HTML de la pregunta se genera con una función helper -->
-                        </div>
+                            </div>
                         
-                        <!-- Contenedor para más preguntas -->
                         <div class="sub-question-container"></div>
                         <div class="sub-question-loader loader"></div>
                     </div>
@@ -3208,6 +2974,4 @@
 
     </script>
 </body>
-
 </html>
-
