@@ -1792,12 +1792,136 @@
          * Parsea y renderiza el Plan de Estudio como un acordeón para el Modo Estudio.
          * MODIFICADO: Ahora usa IA para parsear el syllabus.
          */
+        // --- INICIO: Nueva función para parsear el Syllabus con IA ---
+        async function parseSyllabusWithAI(syllabusText) {
+            const systemPrompt = `
+                Eres un asistente de organización académica. 
+                Tu tarea es leer un plan de estudios (syllabus) y estructurarlo en un formato JSON.
+                Identifica las 'unidades' (temas principales o bolillas) y los 'temas' (subtemas o contenidos) dentro de cada una.
+
+                Reglas:
+                1. Si el plan de estudios está claramente dividido por "Unidad X" o "Bolilla X", úsalas como "unit".
+                2. Las líneas que siguen a una unidad (y que no son otra unidad) son sus "topics".
+                3. Si el plan solo lista temas (ej. "Tema 1: ...", "Tema 2: ..."), crea una sola unidad llamada "Temas Generales" y lista todos los temas como "topics".
+                4. Interpreta el contenido de forma inteligente. Por ejemplo, si una línea es "Unidad 5. Alcoholes." y la siguiente es "Etanol, metanol, isopropanol.", la segunda línea es un "topic" (o varios) de la Unidad 5.
+            `;
+
+            const jsonSchema = {
+                type: "ARRAY",
+                items: {
+                    type: "OBJECT",
+                    properties: {
+                        "unit": { 
+                            "type": "STRING", 
+                            "description": "El nombre de la unidad o bolilla principal." 
+                        },
+                        "topics": {
+                            "type": "ARRAY",
+                            "description": "Una lista de los temas o subtemas dentro de esa unidad.",
+                            "items": { "type": "STRING" }
+                        }
+                    },
+                    "required": ["unit", "topics"]
+                }
+            };
+            
+            const generationConfig = {
+                responseMimeType: "application/json",
+                responseSchema: jsonSchema
+            };
+
+            const userQuery = `
+                Por favor, parsea el siguiente plan de estudios. Asegúrate de agrupar los temas bajo sus unidades correctas:
+                --- INICIO PLAN DE ESTUDIOS ---
+                ${syllabusText}
+                --- FIN PLAN DE ESTUDIOS ---
+            `;
+
+            try {
+                const resultText = await callGemini(systemPrompt, userQuery, generationConfig);
+                return JSON.parse(resultText);
+            } catch (error) {
+                console.error("Error en parseSyllabusWithAI:", error);
+                throw new Error(`La IA no pudo procesar el plan de estudio: ${error.message}`);
+            }
+        }
+        
+        async function renderSyllabusBrowser() {
+        /**
+         * Parsea y renderiza el Plan de Estudio como un acordeón para el Modo Estudio.
+         * MODIFICADO: Ahora usa IA para parsear el syllabus.
+         */
         async function renderSyllabusBrowser() {
             const syllabus = syllabusText.value;
             if (!syllabus || syllabus.trim() === '') {
                 syllabusBrowser.innerHTML = '<p class="text-gray-500">No has cargado un Plan de Estudio en la pestaña "Material".</p>';
                 return;
             }
+
+            // Mostrar loader mientras la IA analiza
+            syllabusBrowser.innerHTML = `
+                <div class="text-center py-4">
+                    <div class="loader mx-auto"></div>
+                    <p class="text-gray-600 mt-2">Analizando tu Plan de Estudio...</p>
+                </div>`;
+            
+            let groupedSyllabus = [];
+
+            try {
+                // --- ¡CAMBIO CLAVE! ---
+                // Ya no usamos el parser simple, llamamos a la IA
+                groupedSyllabus = await parseSyllabusWithAI(syllabus);
+                // --- FIN DEL CAMBIO ---
+
+                if (!groupedSyllabus || groupedSyllabus.length === 0) {
+                     syllabusBrowser.innerHTML = '<p class="text-red-500">La IA no pudo encontrar temas estructurados en tu plan de estudio.</p>';
+                     return;
+                }
+                
+                // Renderizar el acordeón (esta lógica es la misma de antes)
+                syllabusBrowser.innerHTML = ''; // Limpiar loader
+                groupedSyllabus.forEach((unitData, index) => {
+                    const unitGroupEl = document.createElement('div');
+                    unitGroupEl.className = 'unit-group';
+                    
+                    // Botón de Unidad
+                    const unitButton = document.createElement('button');
+                    unitButton.className = 'unit-toggle-btn';
+                    unitButton.setAttribute('aria-expanded', 'false');
+                    unitButton.innerHTML = `
+                        <span>${unitData.unit}</span>
+                        <span class="toggle-icon" data-lucide="chevron-down"></span>
+                    `;
+                    unitGroupEl.appendChild(unitButton);
+
+                    // Contenedor de Temas (oculto)
+                    const unitTopicsContainer = document.createElement('div');
+                    unitTopicsContainer.className = 'unit-topics-container';
+                    unitGroupEl.appendChild(unitTopicsContainer);
+
+                    if (unitData.topics.length > 0) {
+                        unitData.topics.forEach(topic => {
+                            const topicButton = document.createElement('button');
+                            topicButton.className = 'syllabus-topic-btn';
+                            topicButton.textContent = topic;
+                            topicButton.dataset.unit = unitData.unit;
+                            topicButton.dataset.topic = topic;
+                            unitTopicsContainer.appendChild(topicButton);
+                        });
+                    } else {
+                        // Esto ahora solo debería aparecer si la IA devuelve una unidad con un array de topics vacío
+                        unitTopicsContainer.innerHTML = '<p class="text-gray-500 p-4">No hay temas listados para esta unidad.</p>';
+                    }
+                    syllabusBrowser.appendChild(unitGroupEl);
+                });
+                
+                if (typeof lucide !== 'undefined') { lucide.createIcons(); }
+
+            } catch (error) {
+                 console.error("Error en renderSyllabusBrowser:", error);
+                 syllabusBrowser.innerHTML = `<p class="text-red-500">Error al analizar el plan de estudio: ${error.message}</p>`;
+            }
+        }
 
             // Mostrar loader mientras la IA analiza
             syllabusBrowser.innerHTML = `
@@ -3086,3 +3210,4 @@
 </body>
 
 </html>
+
